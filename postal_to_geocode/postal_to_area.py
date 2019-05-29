@@ -17,7 +17,8 @@ def _get_connection(file_name=None):
     folder_path = os.path.dirname(os.path.realpath(__file__))
     db_full_path = os.path.join(folder_path, '{}.db'.format(file_name))
 
-    assert os.path.exists(db_full_path), 'Missing DB file for location lookup. Initialization has not been run.'
+    if not os.path.exists(db_full_path):
+        uncompress_db()
 
     if not _local.CONNECTION:
         _local.CONNECTION = sqlite3.connect(db_full_path)
