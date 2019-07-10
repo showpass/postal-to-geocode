@@ -1,1 +1,1 @@
-from postal_to_area import *
+from .postal_to_area import *

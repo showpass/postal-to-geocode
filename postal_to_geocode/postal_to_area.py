@@ -2,7 +2,7 @@ import os
 import sqlite3
 import threading
 import gzip
-import unicodecsv as csv
+import csv
 
 cwd = os.getcwd()
 
@@ -97,7 +97,7 @@ def generate_db_file(folder_path, file_url, file_name=None):
     with open(file_full_path, 'r') as address_file:
         dialect = csv.Sniffer().sniff(address_file.read(1024))
         address_file.seek(0)
-        _address_csv = csv.reader(address_file, dialect, encoding='utf-8')
+        _address_csv = csv.reader(address_file, dialect)
         to_db = [tuple(col_v) for col_v in _address_csv]
 
     print('Importing database into a sqlite3 db file')
