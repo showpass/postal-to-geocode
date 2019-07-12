@@ -9,8 +9,6 @@ cwd = os.getcwd()
 GEO_FILE_NAME = 'allCountries'
 
 _local = threading.local()
-_local.CONNECTION = None
-_local.CURSOR = None
 
 def _get_connection(file_name=None):
     file_name = file_name or GEO_FILE_NAME
@@ -20,23 +18,26 @@ def _get_connection(file_name=None):
     if not os.path.exists(db_full_path):
         uncompress_db()
 
-    if not _local.CONNECTION:
-        _local.CONNECTION = sqlite3.connect(db_full_path)
+    connection = getattr(_local, 'CONNECTION', sqlite3.connect(db_full_path))
+    # assign it back just incase the getattr above defaulted
+    _local.CONNECTION = connection
 
-    return _local.CONNECTION
+    return connection
 
 
 def lookup_postal_code(country, postal_code):
-    if not _local.CURSOR:
-        _local.CURSOR = _get_connection().cursor()
+    cursor = getattr(_local, 'CURSOR', _get_connection().cursor())
+    # assign it back to the _local incase the getattr above defaulted
+    _local.CURSOR = cursor
+
     if country.lower().strip() in ['ca', 'canada']:
         postal_code = postal_code[:3]
 
-    _local.CURSOR.execute('''
+    cursor.execute('''
         SELECT * FROM postal_to_cities WHERE country = ? AND postal_code = ?
     ''', (country, postal_code))
 
-    first_one = _local.CURSOR.fetchone()
+    first_one = cursor.fetchone()
 
     if first_one:
         return {
@@ -133,3 +134,4 @@ def uncompress_db(file_name=None):
     with gzip.open(gz_full_path, 'rb') as gzip_file:
         with open(db_full_path, 'wb') as db_file:
             db_file.write(gzip_file.read())
+
