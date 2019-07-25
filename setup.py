@@ -11,6 +11,7 @@ class PostDevelopCommand(develop):
 class PostInstallCommand(install):
     def run(self):
         from postal_to_geocode import uncompress_db
+        print('uncompressing db file')
         uncompress_db()
         install.run(self)
 
