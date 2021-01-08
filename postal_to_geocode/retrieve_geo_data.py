@@ -2,10 +2,9 @@ import csv
 import os
 import sqlite3
 
+from urllib.request import urlopen
 from zipfile import ZipFile
 from io import BytesIO, TextIOWrapper
-
-import requests
 
 GEO_FILE_NAME = 'allCountries'
 GEO_FILE_URL = 'http://download.geonames.org/export/zip/allCountries.zip'
@@ -23,11 +22,11 @@ def setup_db(file_name=GEO_FILE_NAME, folder_path=None, db_full_path=None):
             retrieve_geo_from_url()
 
 
-def retrieve_geo_from_url(url=GEO_FILE_URL):
+def retrieve_geo_from_url(url=GEO_FILE_URL,file_name=GEO_FILE_NAME):
     print(f'Retrieving data file from {url}')
-    geo_file = requests.get(url)
-    geo_zip_data = ZipFile(BytesIO(geo_file.content))
-    address_file = TextIOWrapper(geo_zip_data.open(f'{GEO_FILE_URL}.txt'), encoding='UTF-8')
+    geo_file = urlopen(url).read()
+    geo_zip_data = ZipFile(BytesIO(geo_file))
+    address_file = TextIOWrapper(geo_zip_data.open(f'{file_name}.txt'), encoding='UTF-8')
     import_csv_to_db(address_file)
 
 
