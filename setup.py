@@ -16,8 +16,5 @@ _post_install(
         license='Creative Commons Attribution-Noncommercial-Share Alike license',
         long_description=open('README.txt').read(),
         include_package_data=True,
-        install_requires=[
-            'requests==2.25.1',
-        ],
         zip_safe=False,
     ))
