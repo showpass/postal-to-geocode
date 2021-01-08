@@ -17,7 +17,7 @@ _post_install(
         long_description=open('README.txt').read(),
         include_package_data=True,
         install_requires=[
-            'requests==2.25.1',
+            'requests==2.*',
         ],
         zip_safe=False,
     ))
